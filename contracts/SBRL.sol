@@ -2,8 +2,9 @@
 pragma solidity ^0.8.13;
 
 import "openzeppelin-contracts/token/ERC20/ERC20.sol";
+import "./interfaces/ISBRL.sol";
 
-contract SBRL is ERC20 {
+contract SBRL is ISBRL, ERC20 {
     mapping(address => bool) private minters;
     address private immutable owner;
 

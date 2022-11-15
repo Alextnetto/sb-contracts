@@ -10,10 +10,12 @@ contract SBRLTest is Test {
     uint256 ethPriceExpected = 2000;
     address owner = address(0x1);
     address user = address(0x2);
+    address hacker = address(0x2);
 
     function setUp() public {
         vm.label(owner, "owner");
         vm.label(user, "user");
+        vm.label(hacker, "hacker");
         vm.deal(owner, 10 ether);
         vm.deal(user, 10 ether);
         vm.startPrank(owner);
@@ -26,6 +28,13 @@ contract SBRLTest is Test {
     function testMintSBRL() public {
         vm.startPrank(owner);
         SBRLToken.mint(user, 1);
+
         assertEq(1, SBRLToken.balanceOf(user));
+    }
+
+    function testMintFailSBRL() public {
+        vm.startPrank(hacker);
+        vm.expectRevert(abi.encodePacked("Address not allowed to mint"));
+        SBRLToken.mint(hacker, 1);
     }
 }

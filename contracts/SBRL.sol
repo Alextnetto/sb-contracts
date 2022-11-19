@@ -3,13 +3,17 @@ pragma solidity ^0.8.13;
 
 import "openzeppelin-contracts/token/ERC20/ERC20.sol";
 import "./interfaces/ISBRL.sol";
+import "./interfaces/AggregatorV3Interface.sol";
 
 contract SBRL is ISBRL, ERC20 {
     mapping(address => bool) private minters;
     address private immutable owner;
 
-    constructor() ERC20("Stable Brazilian Real", "SBRL") {
+    AggregatorV3Interface proofOfReserveOracle;
+
+    constructor(address _oracle) ERC20("Stable Brazilian Real", "SBRL") {
         owner = msg.sender;
+        proofOfReserveOracle = AggregatorV3Interface(_oracle);
         setMinter(owner, true);
     }
 
@@ -28,6 +32,8 @@ contract SBRL is ISBRL, ERC20 {
     }
 
     function mint(address to, uint256 amount) public onlyMinter returns (bool) {
+        (, int256 reserve, , , ) = proofOfReserveOracle.latestRoundData();
+        require(totalSupply() + amount <= uint256(reserve));
         _mint(to, amount);
         return true;
     }

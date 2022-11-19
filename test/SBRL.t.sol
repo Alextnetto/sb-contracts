@@ -20,8 +20,9 @@ contract SBRLTest is Test {
         vm.deal(user, 10 ether);
         vm.startPrank(owner);
 
-        SBRLToken = new SBRL();
-
+        SBRLToken = new SBRL(
+            address(0x62e6ba0FFEb7404ef666c58B66B739A4CEd5B013)
+        );
         vm.stopPrank();
     }
 
